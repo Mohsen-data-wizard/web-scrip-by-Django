@@ -1,77 +1,52 @@
-import requests
-from bs4 import BeautifulSoup
-from collections import namedtuple
+About the project:
 
-# Initial settings
-URL = "https://shoeseller.in/"
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                  "(HTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
-}
-PRODUCT_CLASS = "product"          # Class for each product ((may change depending on the site))
-PRODUCT_NAME_TAGS = ["h1", "h2", "h3"]
-PRICE_TAG = "bdi"
-DESCRIPTION_TAG = "div"
-IMAGE_TAG = "img"
+This project is a Django web application for web scraping that can collect desired information from different sites and display it in a suitable format. This app can be used for data analysis, useful information, and database storage.
 
-# Product definition for data retention
-Product = namedtuple("Product", ["name", "price", "description", "image"])
+---
 
-def fetch_page(url):
-    """ Retrieving page contents with requests and handling errors """
-    try:
-        response = requests.get(url, headers=HEADERS, timeout=10)
-        response.raise_for_status()
-        response.encoding = response.apparent_encoding
-        return response.text
-    except requests.RequestException as e:
-        print(f"Error retrieving page: {e}")
-        return None
+Features:
 
-def extract_text(element):
-    """ Extract text from element, if there is no default value 'Not found' """
-    return element.get_text(strip=True) if element else "Not found"
+-Automatic extraction of information from web pages
 
-def find_product_name(product):
-    """ Search for product name among multiple possible tags """
-    for tag in PRODUCT_NAME_TAGS:
-        name_tag = product.find(tag)
-        if name_tag:
-            return name_tag.get_text(strip=True)
-    return "Not found"
+-Data storage in the database
 
-def parse_products(html):
-    """ HTML processing and product information extraction """
-    soup = BeautifulSoup(html, "html.parser")
-    products_html = soup.find_all("div", class_=PRODUCT_CLASS)
-    products = []
+-Display of extracted data in the form of a web user interface
 
-    for product in products_html:
-        name = find_product_name(product)
-        price = extract_text(product.select_one(PRICE_TAG))
-        description = extract_text(product.select_one(DESCRIPTION_TAG))
-        image_tag = product.select_one(IMAGE_TAG)
-        image = (image_tag.get("src") or image_tag.get("data-src") or "Not found") if image_tag else "Not found"
+-Filter and search capability in the received data
 
-        products.append(Product(name, price, description, image))
-    return products
+-Powerful backend with Django and RESTful APIs
 
-def display_products(products):
-    """ Displaying products in the console """
-    for product in products:
-        print(f"Product Name: {product.name}")
-        print(f"Price: {product.price}")
-        print(f"Description: {product.description}")
-        print(f"Image URL: {product.image}")
-        print("-" * 50)
+-Easy execution on cloud servers such as Render
 
-def main():
-    html = fetch_page(URL)
-    if html:
-        products = parse_products(html)
-        display_products(products)
-    else:
-        print("Page not received")
+---
 
-if __name__ == "__main__":
-    main()
+Technologies used:
+
+-Python - The main language for project development
+
+-Django - A framework for managing requests and the database
+
+-SQLite/PostgreSQL - For storing extracted data
+
+-HTML/CSS - For designing the user interface
+
+-Render - For deploying and running the project in the cloud
+
+---
+
+Libraries:
+
+-Requests - For sending HTTP requests and receiving from websites
+
+-BeautifulSoup - For processing and extracting information from HTML code
+
+-Django REST Framework - for creating RESTful APIs
+
+-Gunicorn - for running projects in a server environment
+
+-Whitenoise - for managing static files in a production environment
+
+---
+
+If you need more features, you can use other libraries
+
